@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Models\ProductData;
+use App\Models\Company;
 use App\Models\product;
-
 
 Route::get('/', function () {
     return view('welcome') ;
@@ -18,18 +19,13 @@ Route::get('/sign', function () {
 
 
 Route::get("/products", function () {
-    $products = product ::all();
-    
-    return view("products", ["products" => $products]);
+    $products = ProductData::with("company")->paginate(4);
+    return view("products", ["products" => $products
+]);
 });
 
 Route::get("/products/{id}" ,function($id){
-    $products = product::all();
-    $product_data =[];
-    foreach($products as $product){
-        if($product["id"]==$id){
-            $product_data[] = $product;
-        }
-    }
-    return view ("product", ["product"=>$product_data[0]]);
+    $product = ProductData::find($id);
+    
+    return view ("product", ["product"=>$product]);
 });
